@@ -37,3 +37,21 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+    ## Add the below snippet at the end of your pipeline
+    - task: AzureWebAppContainer@1
+      inputs:
+        azureSubscription: 'Azure subscription 1'
+        appName: 'apptestingcontainerdeployjuang'
+        containers: $(containerRegistry)/$(imageRepository):$(tag)
+        deployToSlotOrASE: true
+        resourceGroupName: 'RG-Polyglot-Microservices'
+        slotName: staging
+
+    - task: AzureAppServiceManage@0
+      inputs:
+        azureSubscription: 'Azure subscription 1'
+        WebAppName: 'webapptestingcontainerdeployjuang'
+        ResourceGroupName: 'RG-Polyglot-Microservices'
+        SourceSlot: staging
+        SwapWithProduction: true
